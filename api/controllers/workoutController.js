@@ -12,9 +12,16 @@ exports.createWorkout = async (req, res) => {
 
 exports.getWorkouts = async (req, res) => {
   try {
-    const workouts = await Workout.find();
-    console.log(workouts);
-    res.json(workouts);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+
+    const workouts = await Workout.find()
+      .skip((page - 1) * limit) // Skip documents for pagination
+      .limit(limit); // Limit the number of documents returned;
+
+    const totalWorkouts = await Workout.countDocuments();
+    res.json({ workouts, page, limit, total: totalWorkouts });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
