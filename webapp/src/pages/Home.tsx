@@ -5,6 +5,13 @@ import WorkoutForm from "../components/WorkoutForm/WorkoutForm";
 
 const PAGE_LIMIT = 5;
 
+interface getWorkoutDataProps {
+  limit: number;
+  page: number;
+  total: number;
+  workouts: Workout[];
+}
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [addNewWorkout, setAddNewWorkout] = useState<boolean>(false);
@@ -29,9 +36,17 @@ export default function Home() {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      const workoutData: Workout[] = await res.json();
-      setWorkouts((prevWorkouts) => [...prevWorkouts, ...workoutData]);
-      setHasMore(workoutData.length > 0);
+      const workoutData: getWorkoutDataProps = await res.json();
+      console.log(workoutData);
+      if (page > 1) {
+        setWorkouts((prevWorkouts) => [
+          ...prevWorkouts,
+          ...workoutData.workouts,
+        ]);
+      } else {
+        setWorkouts(workoutData.workouts);
+      }
+      setHasMore(workoutData.total > 0);
     } catch (err) {
       console.log(err);
       setError("Failed to fetch products. Please try again later.");

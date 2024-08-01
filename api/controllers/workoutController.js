@@ -11,6 +11,7 @@ exports.createWorkout = async (req, res) => {
 };
 
 exports.getWorkouts = async (req, res) => {
+  console.log(req.query);
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
@@ -25,6 +26,13 @@ exports.getWorkouts = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+  // try {
+  //   console.log("hit here");
+  //   const workouts = await Workout.find();
+  //   res.json(workouts);
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
 };
 
 exports.getWorkoutById = async (req, res) => {
