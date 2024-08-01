@@ -1,4 +1,7 @@
+import React from "react";
 import { Workout } from "../../types";
+
+interface WorkoutListItemProps extends Workout {}
 
 export default function WorkoutListItem({
   _id,
@@ -7,9 +10,9 @@ export default function WorkoutListItem({
   equipment_needed,
   image_url,
   video_url,
-}: Workout) {
+}: WorkoutListItemProps) {
   return (
-    <div>
+    <div key={_id}>
       <h3>{image_url}</h3>
       <h3>{title}</h3>
       <p>{description}</p>

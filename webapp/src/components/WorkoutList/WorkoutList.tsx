@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import WorkoutListItem from "../WorkoutListItem/WorkoutListItem";
 import { Workout } from "../../types";
 
@@ -13,32 +13,18 @@ export default function WorkoutList({
 }: WorkoutListProps) {
   return (
     <div>
-      {workoutList.length > 0
-        ? workoutList.map((workout, index) => (
-            <div
-              onClick={() =>
-                setShowEditWorkoutForm({
-                  _id: workout._id,
-                  title: workout.title,
-                  description: workout.description,
-                  equipment_needed: workout.equipment_needed,
-                  image_url: workout.image_url,
-                  video_url: workout.video_url,
-                })
-              }
-              key={index}
-            >
-              <WorkoutListItem
-                _id={workout._id}
-                title={workout.title}
-                description={workout.description}
-                equipment_needed={workout.equipment_needed}
-                image_url={workout.image_url}
-                video_url={workout.video_url}
-              />
-            </div>
-          ))
-        : "No Workouts Created"}
+      {workoutList.length > 0 ? (
+        workoutList.map((workout) => (
+          <div
+            onClick={() => setShowEditWorkoutForm(workout)}
+            key={workout._id}
+          >
+            <WorkoutListItem {...workout} />
+          </div>
+        ))
+      ) : (
+        <p>No Workouts Created</p>
+      )}
     </div>
   );
 }

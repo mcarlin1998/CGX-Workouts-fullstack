@@ -43,29 +43,21 @@ export default function Home() {
           value={searchTerm}
           onChange={handleChange}
           placeholder="Search workouts..."
-          // style={styles.input}
         />
       </div>
       <div>
         <button onClick={() => setAddNewWorkout(!addNewWorkout)}>
-          Add a new workout
+          {addNewWorkout ? "Cancel" : "Add a new workout"}
         </button>
       </div>
-      {addNewWorkout ? (
+      {(addNewWorkout || showEditWorkoutForm) && (
         <WorkoutForm
           newWorkout={addNewWorkout}
-          setAddNewWorkout={setAddNewWorkout}
-          showEditWorkoutForm={null}
-          setShowEditWorkoutForm={setShowEditWorkoutForm}
-        />
-      ) : showEditWorkoutForm ? (
-        <WorkoutForm
-          newWorkout={false}
           setAddNewWorkout={setAddNewWorkout}
           showEditWorkoutForm={showEditWorkoutForm}
           setShowEditWorkoutForm={setShowEditWorkoutForm}
         />
-      ) : null}
+      )}
       <div>
         <WorkoutList
           workoutList={workouts}

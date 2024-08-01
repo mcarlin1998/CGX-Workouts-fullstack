@@ -137,7 +137,35 @@ export default function WorkoutForm({
     setErrorMessages(errors);
     return errors.length === 0;
   };
+  async function handleDeleteWorkout() {
+    if (!showEditWorkoutForm?._id) {
+      console.error("No workout selected for deletion.");
+      return;
+    }
 
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/workouts/${showEditWorkoutForm._id}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.ok) {
+        console.log("Workout deleted successfully");
+        setShowEditWorkoutForm(null);
+      } else {
+        const errorData = await response.json();
+        setErrorMessages(["Failed to delete workout. Please try again later."]);
+      }
+    } catch (error) {
+      setErrorMessages(["Network error. Please try again later."]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
     <div>
       <h1>{newWorkout ? "Create a New Workout" : "Edit Workout"}</h1>
@@ -212,8 +240,17 @@ export default function WorkoutForm({
           </div>
         )}
         <button type="submit" disabled={isLoading}>
-          {isLoading ? "Submitting..." : "Submit Workout"}
+          {isLoading
+            ? "Submitting..."
+            : newWorkout
+            ? "Submit Workout"
+            : "Edit Workout"}
         </button>
+        {showEditWorkoutForm ? (
+          <button disabled={isLoading} onClick={handleDeleteWorkout}>
+            {isLoading ? "Submitting..." : "Delete Workout"}
+          </button>
+        ) : null}
       </form>
     </div>
   );
