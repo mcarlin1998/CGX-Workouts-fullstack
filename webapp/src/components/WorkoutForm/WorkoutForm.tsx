@@ -1,7 +1,22 @@
-import React, { useState } from "react";
-import { WorkoutFormStateProps, WorkoutFormProps } from "../../types";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
-export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
+export interface WorkoutFormStateProps {
+  title: string;
+  description: string;
+  equipment_needed: string;
+  image_url: string;
+  video_url: string;
+}
+
+export interface WorkoutFormProps {
+  newWorkout: boolean;
+  setAddNewWorkout: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function WorkoutForm({
+  newWorkout,
+  setAddNewWorkout,
+}: WorkoutFormProps) {
   // Initialize state for form inputs
   const [formData, setFormData] = useState<WorkoutFormStateProps>({
     title: "",
@@ -10,6 +25,7 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
     image_url: "",
     video_url: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Initialize state for error messages
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -56,6 +72,7 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
               image_url: "",
               video_url: "",
             });
+            setAddNewWorkout(false);
           } else {
             const errorData = await response.json();
             console.error("Error:", errorData);
@@ -122,7 +139,6 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
             required
           />
         </div>
-
         <div>
           <label htmlFor="description">Description:</label>
           <textarea
@@ -133,7 +149,6 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
             required
           />
         </div>
-
         <div>
           <label htmlFor="equipment_needed">Equipment Needed:</label>
           <select
@@ -151,7 +166,6 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
             ))}
           </select>
         </div>
-
         <div>
           <label htmlFor="image_url">Image URL:</label>
           <input
@@ -163,7 +177,6 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
             required
           />
         </div>
-
         <div>
           <label htmlFor="video_url">Video URL:</label>
           <input
@@ -175,7 +188,6 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
             required
           />
         </div>
-
         {errorMessages.length > 0 && (
           <div className="error-messages">
             {errorMessages.map((msg, index) => (
@@ -185,8 +197,9 @@ export default function WorkoutForm({ newWorkout }: WorkoutFormProps) {
             ))}
           </div>
         )}
-
-        <button type="submit">Submit Workout</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Submitting..." : "Submit Workout"}
+        </button>{" "}
       </form>
     </div>
   );

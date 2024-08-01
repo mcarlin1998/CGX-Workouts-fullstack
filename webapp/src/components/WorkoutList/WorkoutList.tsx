@@ -14,6 +14,7 @@ export default function WorkoutList({ workoutList }: WorkoutProps) {
               equipment_needed={workout.equipment_needed}
               image_url={workout.image_url}
               video_url={workout.video_url}
+              key={index}
             />
           ))
         : "No Workouts Created"}

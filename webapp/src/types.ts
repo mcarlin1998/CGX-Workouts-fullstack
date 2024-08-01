@@ -11,15 +11,3 @@ export interface Workouts {
 export interface WorkoutProps {
   workoutList: Workouts[];
 }
-
-export interface WorkoutFormStateProps {
-  title: string;
-  description: string;
-  equipment_needed: string;
-  image_url: string;
-  video_url: string;
-}
-
-export interface WorkoutFormProps {
-  newWorkout: boolean;
-}
