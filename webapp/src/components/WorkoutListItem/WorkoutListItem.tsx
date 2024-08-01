@@ -1,4 +1,4 @@
-import { Workouts } from "../../types";
+import { Workout } from "../../types";
 
 export default function WorkoutListItem({
   _id,
@@ -7,7 +7,7 @@ export default function WorkoutListItem({
   equipment_needed,
   image_url,
   video_url,
-}: Workouts) {
+}: Workout) {
   return (
     <div>
       <h3>{image_url}</h3>

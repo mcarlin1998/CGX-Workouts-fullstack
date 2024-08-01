@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import WorkoutList from "../components/WorkoutList/WorkoutList";
-import { WorkoutProps, Workouts } from "../types";
+import { Workout } from "../types";
 import WorkoutForm from "../components/WorkoutForm/WorkoutForm";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [addNewWorkout, setAddNewWorkout] = useState<boolean>(false);
-  const [workouts, setWorkouts] = useState<Workouts[]>([]);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [showEditWorkoutForm, setShowEditWorkoutForm] =
+    useState<Workout | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value;
@@ -21,7 +23,7 @@ export default function Home() {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      const workoutData: Workouts[] = await res.json();
+      const workoutData: Workout[] = await res.json();
       setWorkouts(workoutData);
     } catch (err) {
       console.log(err);
@@ -31,7 +33,7 @@ export default function Home() {
 
   useEffect(() => {
     getWorkoutData();
-  }, [addNewWorkout]);
+  }, [addNewWorkout, showEditWorkoutForm]);
 
   return (
     <div>
@@ -49,14 +51,26 @@ export default function Home() {
           Add a new workout
         </button>
       </div>
-      {addNewWorkout && (
+      {addNewWorkout ? (
         <WorkoutForm
           newWorkout={addNewWorkout}
           setAddNewWorkout={setAddNewWorkout}
+          showEditWorkoutForm={null}
+          setShowEditWorkoutForm={setShowEditWorkoutForm}
         />
-      )}
+      ) : showEditWorkoutForm ? (
+        <WorkoutForm
+          newWorkout={false}
+          setAddNewWorkout={setAddNewWorkout}
+          showEditWorkoutForm={showEditWorkoutForm}
+          setShowEditWorkoutForm={setShowEditWorkoutForm}
+        />
+      ) : null}
       <div>
-        <WorkoutList workoutList={workouts} />
+        <WorkoutList
+          workoutList={workouts}
+          setShowEditWorkoutForm={setShowEditWorkoutForm}
+        />
       </div>
     </div>
   );
