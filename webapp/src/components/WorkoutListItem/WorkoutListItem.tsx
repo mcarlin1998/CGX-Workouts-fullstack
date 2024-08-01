@@ -1,6 +1,7 @@
 import { Workouts } from "../../types";
 
 export default function WorkoutListItem({
+  _id,
   title,
   description,
   equipment_needed,

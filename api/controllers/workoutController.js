@@ -12,8 +12,8 @@ exports.createWorkout = async (req, res) => {
 
 exports.getWorkouts = async (req, res) => {
   try {
-    console.log("hit here");
     const workouts = await Workout.find();
+    console.log(workouts);
     res.json(workouts);
   } catch (error) {
     res.status(500).json({ message: error.message });
