@@ -182,91 +182,152 @@ export default function WorkoutForm({
     }
   }
   return (
-    <div>
-      <h1>{newWorkout ? "Create a New Workout" : "Edit Workout"}</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">Title:</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="description">Description:</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="equipment_needed">Equipment Needed:</label>
-          <select
-            id="equipment_needed"
-            name="equipment_needed"
-            value={formData.equipment_needed}
-            onChange={handleChange}
-            required
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
+        <button
+          type="button"
+          onClick={() => setShowEditWorkoutForm(null)}
+          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+        >
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <option value="">Select equipment</option>
-            {equipmentOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="image_url">Image URL:</label>
-          <input
-            type="url"
-            id="image_url"
-            name="image_url"
-            value={formData.image_url}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="video_url">Video URL:</label>
-          <input
-            type="url"
-            id="video_url"
-            name="video_url"
-            value={formData.video_url}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        {errorMessages.length > 0 && (
-          <div className="error-messages">
-            {errorMessages.map((msg, index) => (
-              <p key={index} className="error">
-                {msg}
-              </p>
-            ))}
-          </div>
-        )}
-        <button type="submit" disabled={isLoading}>
-          {isLoading
-            ? "Submitting..."
-            : newWorkout
-            ? "Submit Workout"
-            : "Edit Workout"}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
-        {showEditWorkoutForm ? (
-          <button disabled={isLoading} onClick={handleDeleteWorkout}>
-            {isLoading ? "Submitting..." : "Delete Workout"}
+        <h1 className="text-xl font-bold mb-4">
+          {newWorkout ? "Create a New Workout" : "Edit Workout"}
+        </h1>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Title:
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="equipment_needed"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Equipment Needed:
+            </label>
+            <select
+              id="equipment_needed"
+              name="equipment_needed"
+              value={formData.equipment_needed}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+            >
+              <option value="">Select equipment</option>
+              {equipmentOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="image_url"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Image URL:
+            </label>
+            <input
+              type="url"
+              id="image_url"
+              name="image_url"
+              value={formData.image_url}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="video_url"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Video URL:
+            </label>
+            <input
+              type="url"
+              id="video_url"
+              name="video_url"
+              value={formData.video_url}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          {errorMessages.length > 0 && (
+            <div className="mb-4 text-red-600">
+              {errorMessages.map((msg, index) => (
+                <p key={index}>{msg}</p>
+              ))}
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            {isLoading
+              ? "Submitting..."
+              : newWorkout
+              ? "Submit Workout"
+              : "Edit Workout"}
           </button>
-        ) : null}
-      </form>
+          {showEditWorkoutForm && (
+            <button
+              type="button"
+              onClick={handleDeleteWorkout}
+              disabled={isLoading}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mt-2"
+            >
+              {isLoading ? "Deleting..." : "Delete Workout"}
+            </button>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

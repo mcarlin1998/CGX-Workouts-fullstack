@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import WorkoutList from "../components/WorkoutList/WorkoutList";
-import { Workout } from "../types";
-import WorkoutForm from "../components/WorkoutForm/WorkoutForm";
+import WorkoutList from "../../components/WorkoutList/WorkoutList";
+import { Workout } from "../../types";
+import WorkoutForm from "../../components/WorkoutForm/WorkoutForm";
 
 const PAGE_LIMIT = 5;
 
@@ -116,7 +116,10 @@ export default function Home() {
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
-        <form onSubmit={handleSearchSubmit} className="flex gap-2">
+        <form
+          onSubmit={handleSearchSubmit}
+          className="flex gap-2 justify-center"
+        >
           <input
             type="text"
             value={searchTerm}
