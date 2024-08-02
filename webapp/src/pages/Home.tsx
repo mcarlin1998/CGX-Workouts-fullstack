@@ -12,6 +12,12 @@ interface getWorkoutDataProps {
   workouts: Workout[];
 }
 
+interface workoutPaginationProps {
+  limit: number;
+  page: number;
+  total: number;
+}
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [addNewWorkout, setAddNewWorkout] = useState<boolean>(false);
@@ -21,6 +27,8 @@ export default function Home() {
     useState<Workout | null>(null);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const [workoutPaginationData, setWorkoutPaginationData] =
+    useState<workoutPaginationProps | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value;
@@ -46,6 +54,12 @@ export default function Home() {
       } else {
         setWorkouts(workoutData.workouts);
       }
+      setWorkoutPaginationData({
+        limit: workoutData.limit,
+        page: workoutData.page,
+        total: workoutData.total,
+      });
+
       setHasMore(workoutData.total > 0);
     } catch (err) {
       console.log(err);
@@ -57,11 +71,18 @@ export default function Home() {
     getWorkoutData(page);
   }, [addNewWorkout, showEditWorkoutForm, page]);
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage > 0 && newPage <= Math.ceil(workouts.length / PAGE_LIMIT)) {
+  function handlePageChange(newPage: number) {
+    console.log(newPage);
+    if (
+      workoutPaginationData &&
+      newPage > 0 &&
+      newPage <= Math.ceil(workoutPaginationData.total / PAGE_LIMIT)
+    ) {
       setPage(newPage);
     }
-  };
+  }
+
+  console.log(hasMore);
 
   return (
     <div>
