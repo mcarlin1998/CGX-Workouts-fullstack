@@ -82,15 +82,8 @@ export default function WorkoutForm({
 
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            newWorkout ? "Workout created:" : "Workout edited:",
-            data
-          );
 
-          if (newWorkout) {
-            // Add the new workout to the workouts state
-            setWorkouts((prevWorkouts) => [...prevWorkouts, data]);
-          } else {
+          if (showEditWorkoutForm) {
             // Update the existing workout in the workouts state
             setWorkouts((prevWorkouts) =>
               prevWorkouts.map((workout) =>

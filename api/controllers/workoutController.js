@@ -16,26 +16,24 @@ exports.getWorkouts = async (req, res) => {
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.title || "";
 
+    //If search is true then $regex operator to do matching and $options for case sensitivity. Potential issues as data becomes more complex and scaled.
     const searchTitleFilter = search
       ? { title: { $regex: search, $options: "i" } }
       : {};
 
+    //Finally checks mongo workoutsDB based on the searchTitleFilter and then uses pagination to limit returns.
+
     const workouts = await Workout.find(searchTitleFilter)
-      .skip((page - 1) * limit) // Skip documents for pagination
-      .limit(limit); // Limit the number of documents returned;
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    //Counts total workouts in db for pagination management and rendering purposes on the front-end.
 
     const totalWorkouts = await Workout.countDocuments(searchTitleFilter);
     res.json({ workouts, page, limit, total: totalWorkouts });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-  // try {
-  //   console.log("hit here");
-  //   const workouts = await Workout.find();
-  //   res.json(workouts);
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
 };
 
 exports.getWorkoutById = async (req, res) => {

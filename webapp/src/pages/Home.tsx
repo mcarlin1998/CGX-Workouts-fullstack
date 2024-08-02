@@ -87,7 +87,7 @@ export default function Home() {
   useEffect(() => {
     getWorkoutData("", page);
     //Removed addNewWorkout state check in dependency array to cut down on unnecessary api requests
-  }, [page]);
+  }, [page, addNewWorkout]);
 
   function handlePageChange(newPage: number) {
     console.log(newPage);
