@@ -14,6 +14,8 @@ export interface WorkoutFormProps {
   setAddNewWorkout: Dispatch<SetStateAction<boolean>>;
   showEditWorkoutForm: Workout | null;
   setShowEditWorkoutForm: (workout: Workout | null) => void;
+  workouts: Workout[];
+  setWorkouts: Dispatch<SetStateAction<Workout[]>>;
 }
 
 export default function WorkoutForm({
@@ -21,6 +23,8 @@ export default function WorkoutForm({
   setAddNewWorkout,
   showEditWorkoutForm,
   setShowEditWorkoutForm,
+  workouts,
+  setWorkouts,
 }: WorkoutFormProps) {
   const [formData, setFormData] = useState<WorkoutFormStateProps>({
     title: "",
@@ -46,19 +50,19 @@ export default function WorkoutForm({
     }
   }, [showEditWorkoutForm]);
 
-  const handleChange = (
+  function handleChange(
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
-  ) => {
+  ) {
     const { name, value } = event.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-  };
+  }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (formValidation()) {
       setIsLoading(true);
@@ -82,6 +86,19 @@ export default function WorkoutForm({
             newWorkout ? "Workout created:" : "Workout edited:",
             data
           );
+
+          if (newWorkout) {
+            // Add the new workout to the workouts state
+            setWorkouts((prevWorkouts) => [...prevWorkouts, data]);
+          } else {
+            // Update the existing workout in the workouts state
+            setWorkouts((prevWorkouts) =>
+              prevWorkouts.map((workout) =>
+                workout._id === data._id ? data : workout
+              )
+            );
+          }
+
           setFormData({
             title: "",
             description: "",
@@ -103,9 +120,9 @@ export default function WorkoutForm({
         setIsLoading(false);
       }
     }
-  };
+  }
 
-  const formValidation = () => {
+  function formValidation() {
     const errors: string[] = [];
 
     if (!formData.title) errors.push("Title is required");
@@ -136,7 +153,7 @@ export default function WorkoutForm({
 
     setErrorMessages(errors);
     return errors.length === 0;
-  };
+  }
   async function handleDeleteWorkout() {
     if (!showEditWorkoutForm?._id) {
       console.error("No workout selected for deletion.");
@@ -155,6 +172,11 @@ export default function WorkoutForm({
 
       if (response.ok) {
         console.log("Workout deleted successfully");
+        setWorkouts((prevWorkouts) =>
+          prevWorkouts.filter(
+            (workout) => workout._id !== showEditWorkoutForm._id
+          )
+        );
         setShowEditWorkoutForm(null);
       } else {
         const errorData = await response.json();

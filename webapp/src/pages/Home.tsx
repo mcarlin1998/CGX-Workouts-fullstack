@@ -29,12 +29,7 @@ export default function Home() {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [workoutPaginationData, setWorkoutPaginationData] =
     useState<workoutPaginationProps | null>(null);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const term = event.target.value;
-    setSearchTerm(term);
-    //   onSearch(term);
-  };
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function getWorkoutData(page: number) {
     try {
@@ -69,7 +64,8 @@ export default function Home() {
 
   useEffect(() => {
     getWorkoutData(page);
-  }, [addNewWorkout, showEditWorkoutForm, page]);
+    //Removed addNewWorkout state check in dependency array to cut down on unnecessary api requests
+  }, [page]);
 
   function handlePageChange(newPage: number) {
     console.log(newPage);
@@ -82,17 +78,48 @@ export default function Home() {
     }
   }
 
-  console.log(hasMore);
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const term = event.target.value;
+    setSearchTerm(term);
+    //   onSearch(term);
+  }
 
+  async function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    console.log(searchTerm);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/workouts?title=${searchTerm}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+      } else {
+        const errorData = await response.json();
+        console.error("Error:", errorData);
+        setError(errorData.message);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      setError("Network error. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  console.log(workouts);
   return (
     <div>
       <div>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleChange}
-          placeholder="Search workouts..."
-        />
+        <form onSubmit={handleSearchSubmit}>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleChange}
+            placeholder="Search workouts..."
+          />
+          <button type="submit">Search</button>
+        </form>
       </div>
       <div>
         <button onClick={() => setAddNewWorkout(!addNewWorkout)}>
@@ -105,6 +132,8 @@ export default function Home() {
           setAddNewWorkout={setAddNewWorkout}
           showEditWorkoutForm={showEditWorkoutForm}
           setShowEditWorkoutForm={setShowEditWorkoutForm}
+          workouts={workouts}
+          setWorkouts={setWorkouts}
         />
       )}
       <div>
@@ -114,15 +143,15 @@ export default function Home() {
         />
       </div>
       <div>
-        <button
+        {/* <button
           onClick={() => handlePageChange(page - 1)}
           disabled={page === 1}
         >
           Previous
         </button>
-        <span>Page {page}</span>
+        <span>Page {page}</span> */}
         <button onClick={() => handlePageChange(page + 1)} disabled={!hasMore}>
-          Next
+          Load More
         </button>
       </div>
     </div>

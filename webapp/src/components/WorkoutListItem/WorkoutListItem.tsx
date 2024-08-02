@@ -12,7 +12,7 @@ export default function WorkoutListItem({
   video_url,
 }: WorkoutListItemProps) {
   return (
-    <div key={_id}>
+    <div>
       <h3>{image_url}</h3>
       <h3>{title}</h3>
       <p>{description}</p>
