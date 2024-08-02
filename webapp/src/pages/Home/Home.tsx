@@ -3,7 +3,9 @@ import WorkoutList from "../../components/WorkoutList/WorkoutList";
 import { Workout } from "../../types";
 import WorkoutForm from "../../components/WorkoutForm/WorkoutForm";
 
-const PAGE_LIMIT = 5;
+const PAGE_LIMIT = 5; //Can adjust as needed for rendering
+
+//Type setting
 
 interface getWorkoutDataProps {
   limit: number;
@@ -19,6 +21,7 @@ interface workoutPaginationProps {
 }
 
 export default function Home() {
+  //UseState Hooks
   const [searchTerm, setSearchTerm] = useState("");
   const [addNewWorkout, setAddNewWorkout] = useState<boolean>(false);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -90,7 +93,7 @@ export default function Home() {
   }, [page, addNewWorkout]);
 
   function handlePageChange(newPage: number) {
-    console.log(newPage);
+    //Handles Loading more workouts if they exist
     if (
       workoutPaginationData &&
       newPage > 0 &&
@@ -101,18 +104,19 @@ export default function Home() {
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    //Sets searchTerm in state
     const term = event.target.value;
     setSearchTerm(term);
     //   onSearch(term);
   }
 
   async function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
+    //When user submits search the getWorkoutData is called where the search term is passed.
     e.preventDefault();
     console.log(searchTerm);
     getWorkoutData(searchTerm, 1);
   }
 
-  console.log(workouts);
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
@@ -160,15 +164,6 @@ export default function Home() {
         />
       </div>
       <div className="mt-4 flex justify-center">
-        {/* Uncomment and style pagination if needed */}
-        {/* <button
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page === 1}
-          className="bg-gray-500 text-white rounded-md px-4 py-2 mr-2 hover:bg-gray-600"
-        >
-          Previous
-        </button>
-        <span className="self-center">Page {page}</span> */}
         <button
           onClick={() => handlePageChange(page + 1)}
           disabled={!hasMore}

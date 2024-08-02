@@ -1,6 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Workout } from "../../types";
 
+//Type sets for local file
+
 export interface WorkoutFormStateProps {
   title: string;
   description: string;
@@ -39,6 +41,7 @@ export default function WorkoutForm({
   const equipmentOptions = ["none", "dumbbells", "barbell", "ball"];
 
   useEffect(() => {
+    //If user is editing a workout, useEffect will set the formData as the present values
     if (showEditWorkoutForm) {
       setFormData({
         title: showEditWorkoutForm.title,
@@ -55,6 +58,7 @@ export default function WorkoutForm({
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) {
+    //Handles changing of formData state when user is either creating a new or editing a workout
     const { name, value } = event.target;
     setFormData({
       ...formData,
@@ -63,7 +67,10 @@ export default function WorkoutForm({
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    //Prevents default form behaviour to refresh
     event.preventDefault();
+    //Api request to either add a new workout via POST or edit via PUT
+    //Won't run requests if formValidation function returns false/errors
     if (formValidation()) {
       setIsLoading(true);
       try {
@@ -91,7 +98,7 @@ export default function WorkoutForm({
               )
             );
           }
-
+          //If successful then state will be cleaned up
           setFormData({
             title: "",
             description: "",
@@ -117,7 +124,7 @@ export default function WorkoutForm({
 
   function formValidation() {
     const errors: string[] = [];
-
+    //Similar checks in the back-end, these validate the form information so the user is kept right.
     if (!formData.title) errors.push("Title is required");
     else if (formData.title.length < 5 || formData.title.length > 50)
       errors.push("Title must be between 5 and 50 characters");
@@ -147,13 +154,16 @@ export default function WorkoutForm({
     setErrorMessages(errors);
     return errors.length === 0;
   }
+
   async function handleDeleteWorkout() {
+    //Cant run the DELETE request if object id doesn't exist
     if (!showEditWorkoutForm?._id) {
       console.error("No workout selected for deletion.");
       return;
     }
 
     setIsLoading(true);
+    //Request to delete workout based on the workout id
     try {
       const response = await fetch(
         `http://localhost:3000/workouts/${showEditWorkoutForm._id}`,
@@ -165,6 +175,7 @@ export default function WorkoutForm({
 
       if (response.ok) {
         console.log("Workout deleted successfully");
+        //If its successfully deleted then the localState workout will be removed - saving an API call.
         setWorkouts((prevWorkouts) =>
           prevWorkouts.filter(
             (workout) => workout._id !== showEditWorkoutForm._id
@@ -186,7 +197,9 @@ export default function WorkoutForm({
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
         <button
           type="button"
-          onClick={() => setShowEditWorkoutForm(null)}
+          onClick={() =>
+            newWorkout ? setAddNewWorkout(false) : setShowEditWorkoutForm(null)
+          }
           className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
         >
           <svg
