@@ -11,26 +11,30 @@ export default function WorkoutList({
   workoutList,
   setShowEditWorkoutForm,
 }: WorkoutListProps) {
-  const [sortOrder, setSortOrder] = useState<"Ascending" | "Descending">(
-    "Ascending"
+  const [sortOrder, setSortOrder] = useState<"Ascending" | "Descending" | "">(
+    ""
   );
   const [sortedWorkoutList, setSortedWorkoutList] = useState<Workout[]>([]);
 
   useEffect(() => {
     // Create a copy of the workout list
-    const sortedList = [...workoutList];
+    if (sortOrder) {
+      const sortedList = [...workoutList];
 
-    // Sort the copied list based on the sort order
-    sortedList.sort((a, b) => {
-      if (sortOrder === "Ascending") {
-        return a.title.localeCompare(b.title);
-      } else {
-        return b.title.localeCompare(a.title);
-      }
-    });
+      // Sort the copied list based on the sort order
+      sortedList.sort((a, b) => {
+        if (sortOrder === "Ascending") {
+          return a.title.localeCompare(b.title);
+        } else {
+          return b.title.localeCompare(a.title);
+        }
+      });
 
-    // Update the state with the sorted list
-    setSortedWorkoutList(sortedList);
+      // Update the state with the sorted list
+      setSortedWorkoutList(sortedList);
+    } else {
+      setSortedWorkoutList(workoutList);
+    }
   }, [workoutList, sortOrder]);
 
   return (
@@ -39,11 +43,12 @@ export default function WorkoutList({
         <label htmlFor="sortOrder">Sort by Title: </label>
         <select
           id="sortOrder"
-          value={sortOrder}
+          defaultValue={"Select Order"}
           onChange={(e) =>
             setSortOrder(e.target.value as "Ascending" | "Descending")
           }
         >
+          <option value="">No Order</option>
           <option value="Ascending">Ascending</option>
           <option value="Descending">Descending</option>
         </select>

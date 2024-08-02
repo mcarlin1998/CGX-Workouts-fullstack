@@ -114,20 +114,29 @@ export default function Home() {
 
   console.log(workouts);
   return (
-    <div>
-      <div>
-        <form onSubmit={handleSearchSubmit}>
+    <div className="container mx-auto p-4">
+      <div className="mb-4">
+        <form onSubmit={handleSearchSubmit} className="flex gap-2">
           <input
             type="text"
             value={searchTerm}
             onChange={handleChange}
             placeholder="Search workouts..."
+            className="border rounded-md p-2 w-full md:w-1/2"
           />
-          <button type="submit">Search</button>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
+          >
+            Search
+          </button>
         </form>
       </div>
-      <div>
-        <button onClick={() => setAddNewWorkout(!addNewWorkout)}>
+      <div className="mb-4">
+        <button
+          onClick={() => setAddNewWorkout(!addNewWorkout)}
+          className="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-600"
+        >
           {addNewWorkout ? "Cancel" : "Add a new workout"}
         </button>
       </div>
@@ -141,21 +150,29 @@ export default function Home() {
           setWorkouts={setWorkouts}
         />
       )}
-      <div>
+      <div className="mt-4">
         <WorkoutList
           workoutList={workouts}
           setShowEditWorkoutForm={setShowEditWorkoutForm}
         />
       </div>
-      <div>
+      <div className="mt-4 flex justify-center">
+        {/* Uncomment and style pagination if needed */}
         {/* <button
           onClick={() => handlePageChange(page - 1)}
           disabled={page === 1}
+          className="bg-gray-500 text-white rounded-md px-4 py-2 mr-2 hover:bg-gray-600"
         >
           Previous
         </button>
-        <span>Page {page}</span> */}
-        <button onClick={() => handlePageChange(page + 1)} disabled={!hasMore}>
+        <span className="self-center">Page {page}</span> */}
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={!hasMore}
+          className={`bg-blue-500 text-white rounded-md px-4 py-2 ${
+            !hasMore ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+          }`}
+        >
           Load More
         </button>
       </div>
