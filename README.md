@@ -1,8 +1,13 @@
-Overview
-API - backend
+# Project README
+
+## Overview
+
+## API - backend
+
 docker-compose up --build
 
-WEBAPP - frontend
+## WEBAPP - frontend
+
 npm start - post 3001
 
 npm test - runs tests through JEST library
