@@ -1,88 +1,90 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import WorkoutList from "../../components/WorkoutList/WorkoutList";
-import { Workout } from "../../types";
+import {
+  GetWorkoutDataFunction,
+  Workout,
+  workoutPaginationProps,
+} from "../../types";
 import WorkoutForm from "../../components/WorkoutForm/WorkoutForm";
 
-const PAGE_LIMIT = 5;
+//Type setting
 
-interface getWorkoutDataProps {
-  limit: number;
+interface HomeProps {
+  getWorkoutData: GetWorkoutDataFunction;
+  PAGE_LIMIT: number;
   page: number;
-  total: number;
-  workouts: Workout[];
+  setPage: Dispatch<SetStateAction<number>>;
+  hasMore: boolean;
+  workoutPaginationData: workoutPaginationProps | null;
 }
 
-interface workoutPaginationProps {
-  limit: number;
-  page: number;
-  total: number;
-}
-
-export default function Home() {
+export default function Home({
+  getWorkoutData,
+  PAGE_LIMIT,
+  page,
+  setPage,
+  hasMore,
+  workoutPaginationData,
+}: HomeProps) {
+  //UseState Hooks
   const [searchTerm, setSearchTerm] = useState("");
   const [addNewWorkout, setAddNewWorkout] = useState<boolean>(false);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [showEditWorkoutForm, setShowEditWorkoutForm] =
     useState<Workout | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [workoutPaginationData, setWorkoutPaginationData] =
-    useState<workoutPaginationProps | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  async function getWorkoutData(searchTerm: string, page: number) {
-    setIsLoading(true);
-    setError(null);
+  // async function getWorkoutData(searchTerm: string, page: number) {
+  //   setIsLoading(true);
+  //   setError(null);
 
-    try {
-      // Construct the query parameters, omitting 'title' if searchTerm is empty
-      const queryParams = new URLSearchParams({
-        page: page.toString(),
-        limit: PAGE_LIMIT.toString(),
-      });
+  //   try {
+  //     // Construct the query parameters, omitting 'title' if searchTerm is empty
+  //     const queryParams = new URLSearchParams({
+  //       page: page.toString(),
+  //       limit: PAGE_LIMIT.toString(),
+  //     });
 
-      if (searchTerm) {
-        queryParams.append("title", searchTerm);
-      }
+  //     if (searchTerm) {
+  //       queryParams.append("title", searchTerm);
+  //     }
 
-      const response = await fetch(
-        `http://localhost:3000/workouts?${queryParams}`
-      );
+  //     const response = await fetch(
+  //       `http://localhost:3000/workouts?${queryParams}`
+  //     );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        setError(errorData.message);
-        return;
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       console.error("Error:", errorData);
+  //       setError(errorData.message);
+  //       return;
+  //     }
 
-      const workoutData: getWorkoutDataProps = await response.json();
-      console.log(workoutData);
+  //     const workoutData: getWorkoutDataProps = await response.json();
+  //     console.log(workoutData);
 
-      if (page > 1) {
-        setWorkouts((prevWorkouts) => [
-          ...prevWorkouts,
-          ...workoutData.workouts,
-        ]);
-      } else {
-        setWorkouts(workoutData.workouts);
-      }
+  //     if (page > 1) {
+  //       setWorkouts((prevWorkouts) => [
+  //         ...prevWorkouts,
+  //         ...workoutData.workouts,
+  //       ]);
+  //     } else {
+  //       setWorkouts(workoutData.workouts);
+  //     }
 
-      setWorkoutPaginationData({
-        limit: workoutData.limit,
-        page: workoutData.page,
-        total: workoutData.total,
-      });
+  //     setWorkoutPaginationData({
+  //       limit: workoutData.limit,
+  //       page: workoutData.page,
+  //       total: workoutData.total,
+  //     });
 
-      setHasMore(workoutData.total > workoutData.page * workoutData.limit);
-    } catch (error) {
-      console.error("Network error:", error);
-      setError("Failed to fetch workouts. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  //     setHasMore(workoutData.total > workoutData.page * workoutData.limit);
+  //   } catch (error) {
+  //     console.error("Network error:", error);
+  //     setError("Failed to fetch workouts. Please try again later.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
     getWorkoutData("", page);
