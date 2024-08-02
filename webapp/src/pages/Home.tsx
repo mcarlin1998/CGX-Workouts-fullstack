@@ -31,16 +31,35 @@ export default function Home() {
     useState<workoutPaginationProps | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  async function getWorkoutData(page: number) {
+  async function getWorkoutData(searchTerm: string, page: number) {
+    setIsLoading(true);
+    setError(null);
+
     try {
-      const res = await fetch(
-        `http://localhost:3000/workouts?page=${page}&limit=${PAGE_LIMIT}`
-      );
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
+      // Construct the query parameters, omitting 'title' if searchTerm is empty
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: PAGE_LIMIT.toString(),
+      });
+
+      if (searchTerm) {
+        queryParams.append("title", searchTerm);
       }
-      const workoutData: getWorkoutDataProps = await res.json();
+
+      const response = await fetch(
+        `http://localhost:3000/workouts?${queryParams}`
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error:", errorData);
+        setError(errorData.message);
+        return;
+      }
+
+      const workoutData: getWorkoutDataProps = await response.json();
       console.log(workoutData);
+
       if (page > 1) {
         setWorkouts((prevWorkouts) => [
           ...prevWorkouts,
@@ -49,21 +68,24 @@ export default function Home() {
       } else {
         setWorkouts(workoutData.workouts);
       }
+
       setWorkoutPaginationData({
         limit: workoutData.limit,
         page: workoutData.page,
         total: workoutData.total,
       });
 
-      setHasMore(workoutData.total > 0);
-    } catch (err) {
-      console.log(err);
-      setError("Failed to fetch products. Please try again later.");
+      setHasMore(workoutData.total > workoutData.page * workoutData.limit);
+    } catch (error) {
+      console.error("Network error:", error);
+      setError("Failed to fetch workouts. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    getWorkoutData(page);
+    getWorkoutData("", page);
     //Removed addNewWorkout state check in dependency array to cut down on unnecessary api requests
   }, [page]);
 
@@ -87,24 +109,7 @@ export default function Home() {
   async function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     console.log(searchTerm);
-    try {
-      const response = await fetch(
-        `http://localhost:3000/workouts?title=${searchTerm}`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-      } else {
-        const errorData = await response.json();
-        console.error("Error:", errorData);
-        setError(errorData.message);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-      setError("Network error. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
+    getWorkoutData(searchTerm, 1);
   }
 
   console.log(workouts);

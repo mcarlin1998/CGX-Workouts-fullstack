@@ -11,17 +11,20 @@ exports.createWorkout = async (req, res) => {
 };
 
 exports.getWorkouts = async (req, res) => {
-  console.log(req.query);
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
-    const search = req.query.search || "";
+    const search = req.query.title || "";
 
-    const workouts = await Workout.find()
+    const searchTitleFilter = search
+      ? { title: { $regex: search, $options: "i" } }
+      : {};
+
+    const workouts = await Workout.find(searchTitleFilter)
       .skip((page - 1) * limit) // Skip documents for pagination
       .limit(limit); // Limit the number of documents returned;
 
-    const totalWorkouts = await Workout.countDocuments();
+    const totalWorkouts = await Workout.countDocuments(searchTitleFilter);
     res.json({ workouts, page, limit, total: totalWorkouts });
   } catch (error) {
     res.status(500).json({ message: error.message });
